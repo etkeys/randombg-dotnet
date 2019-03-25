@@ -6,12 +6,13 @@ namespace randombg_dotnet {
 
         public static void Main(string[] args) {
             Setup(args);
+            Database db = new Database();
             switch (_command){
-                case "SET":
-                    throw new NotImplementedException();
+                case "SETBG":
+                    SetBg.Run(db);
                     break;
                 case "UPDATEDB":
-                    UpdateDb.Run();
+                    UpdateDb.Run(db);
                     break;
             }
         }
@@ -24,7 +25,7 @@ namespace randombg_dotnet {
 
             string cmd = args[0].ToUpper();
             switch (cmd){
-                case "SET":
+                case "SETBG":
                 case "UPDATEDB":
                     _command = cmd;
                     break;

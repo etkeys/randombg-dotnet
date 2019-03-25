@@ -2,10 +2,13 @@ using System;
 
 namespace randombg_dotnet{
     using DbString = String;
+    using KeyNotFoundException = 
+        System.Collections.Generic.KeyNotFoundException;
 
     public interface IDbRecord{
         string Key{get;}
         string ToDbString();
+        string this[string prop]{get;}
     }
 
     public struct ImageRecord: IDbRecord, IEquatable<IDbRecord>{
@@ -14,6 +17,24 @@ namespace randombg_dotnet{
         public string Name, Url;
 
         public string Key{get{return Name;}}
+        public string this[string prop]{
+            get{
+                switch(prop){
+                    case "HasBeenUsed":
+                        return HasBeenUsed.ToString();
+                    case "Name":
+                        return Name;
+                    case "Url":
+                        return Url;
+                    default:
+                        throw new KeyNotFoundException(
+                            String.Format(
+                                "{0} does not contain property {1}",
+                                this.GetType().ToString(),
+                                prop));
+                }
+            }
+        }
 
         public ImageRecord(DbString dbstring){
             string[] parts = dbstring.Split(_DELIM);

@@ -16,13 +16,11 @@ namespace randombg_dotnet{
                 "landscapescities",
                 "landscapesnature",
                 "space"};
-        private static readonly string _URL_BASE = "http://www.mydailywallpaper.com";
+        public static readonly string _URL_BASE = "http://www.mydailywallpaper.com";
 
-        public static void Run(){
+        public static void Run(Database db){
             List<ImageRecord> recs = GetWebBasedRecords();
 
-            Database db = new Database();
-            db.Load();
             db.InsertNewRecords("images", recs.Cast<IDbRecord>());
             db.Save();
         }  
@@ -39,6 +37,7 @@ namespace randombg_dotnet{
         private static IEnumerable<ImageRecord> GetCategoryImageRecords(string cat){
             LinkedList<ImageRecord> result = new LinkedList<ImageRecord>();
 
+            Console.WriteLine($"Fetching {cat}...");
             int pagenum = 1;
             bool keepGoing = true;
             do{

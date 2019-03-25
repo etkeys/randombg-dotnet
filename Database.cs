@@ -31,6 +31,26 @@ namespace randombg_dotnet{
                 DbExistsOnFileSystem.False;
         }
 
+        public void Create(){
+            if (File.Exists(_dbFullName))
+                throw new InvalidOperationException(
+                    $"Cannot create {_dbFullName} because it already exists.");
+
+            using(var temp = File.Create(_dbFullName)){}
+            _dbExistsOnFs = DbExistsOnFileSystem.True;
+            Console.WriteLine($"Created datatabase: {_dbFullName}");
+        }
+
+        public List<ImageRecord> GetUnusedImages(){
+            if (!_isDbLoaded) Load();
+            
+            return _images.Select(kvp => kvp.Value)
+                    .Where(i => Boolean.Parse(i["HasBeenUsed"]) == false)
+                    .Cast<ImageRecord>()
+                    .ToList();
+
+        }
+
         public void InsertNewRecords(string table, IEnumerable<IDbRecord> recs){
             if (!_isDbLoaded) Load();
 
@@ -38,17 +58,21 @@ namespace randombg_dotnet{
 
             var distincts = recs.Distinct();
 
+            long inserted = 0;
             foreach(var item in distincts)
-                if (!append || !_images.ContainsKey(item.Key))
+                if (!append || !_images.ContainsKey(item.Key)){
                     _images.Add(item.Key, item);
+                    inserted++;
+                }
+
+            Console.WriteLine($"{inserted} rows inserted");
         }
 
         public void Load(){
             if (_isDbLoaded) return;
 
             if (_dbExistsOnFs == DbExistsOnFileSystem.False)
-                throw new FileNotFoundException(
-                        $"Could not find file {_dbFullName}.");
+                Create();
 
             using (StreamReader sr = new StreamReader(_dbFullName)){
                 string line, table = String.Empty;
@@ -92,7 +116,7 @@ namespace randombg_dotnet{
         public void Save(){
             if (_dbExistsOnFs == DbExistsOnFileSystem.True && !_isDbLoaded) return;
 
-            using (StreamWriter sw = new StreamWriter(_dbFullName, true)){
+            using (StreamWriter sw = new StreamWriter(_dbFullName, false)){
                 sw.WriteLine($"[images]");
                 foreach(var kvp in _images)
                     sw.WriteLine(kvp.Value.ToDbString());
