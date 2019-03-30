@@ -35,6 +35,9 @@ namespace randombg_dotnet{
                 throw new InvalidOperationException(
                     $"Cannot create {_dbFullName} because it already exists.");
 
+            if (!Directory.Exists(Globals.DbDir))
+                Directory.CreateDirectory(Globals.DbDir);
+
             using(var temp = File.Create(_dbFullName)){}
             _dbExistsOnFs = DbExistsOnFileSystem.True;
             Console.WriteLine($"Created datatabase: {_dbFullName}");
