@@ -9,14 +9,6 @@ using HtmlAgilityPack;
 namespace randombg_dotnet{
 
     public static class UpdateDb{
-        private static readonly List<string> _CATEGORIES = 
-            new List<string>{
-                "abstract",
-                "fantasy",
-                "landscapescities",
-                "landscapesnature",
-                "space"};
-        public static readonly string _URL_BASE = "http://www.mydailywallpaper.com";
 
         public static void Run(Database db){
             List<ImageRecord> recs = GetWebBasedRecords();
@@ -27,7 +19,7 @@ namespace randombg_dotnet{
 
         private static List<ImageRecord> GetWebBasedRecords(){
             List<ImageRecord> result = new List<ImageRecord>();
-            foreach(string cat in _CATEGORIES)
+            foreach(string cat in Globals.SourceImageCategories)
                 result.AddRange(GetCategoryImageRecords(cat)); 
 
             return result;
@@ -60,7 +52,7 @@ namespace randombg_dotnet{
         private static string GetPageUrl(string cat, int pagenum)
         {
             string result =
-                $"{_URL_BASE}/wallcat/{cat}/?";
+                $"{Globals.WEB_SOURCE_BASE_URL}/wallcat/{cat}/?";
 
             result = (pagenum > 1) ?
                 result.Replace("?", $"index{pagenum}.html"):
@@ -93,7 +85,7 @@ namespace randombg_dotnet{
         }
 
         private static ImageRecord CreateImageRecord(string cat, string path){
-            string fullUrl = $"{_URL_BASE}{path}";
+            string fullUrl = $"{Globals.WEB_SOURCE_BASE_URL}{path}";
             string imgName = path.Substring(path.IndexOf('_') + 1);
 
             return new ImageRecord(false, imgName, fullUrl);

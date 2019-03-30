@@ -48,6 +48,10 @@ namespace randombg_dotnet{
             Url = url;
         }
 
+        public ImageRecord ToggleHasBeenUsed(){
+            return new ImageRecord(!HasBeenUsed, Name, Url);
+        }
+
 #region IEquatable<IDbRecord> Implementation
         public bool Equals(IDbRecord other){
             if (Object.ReferenceEquals(other, null)) return false;

@@ -13,9 +13,6 @@ namespace randombg_dotnet{
             False,
             True
         }
-        private readonly string _DB_NAME = "randombg.db";
-        private readonly string _PATH_TO_DB = 
-            Path.Combine("/","home","erik","repos","randombg-dotnet");
 
         private DbExistsOnFileSystem _dbExistsOnFs = 
             DbExistsOnFileSystem.Unknown;
@@ -23,9 +20,11 @@ namespace randombg_dotnet{
         private Entity _images = new Entity();
         private bool _isDbLoaded = false;
 
+        public string DbName { get; } = "randombg.db";
+
         
         public Database(){
-            _dbFullName = Path.Combine(_PATH_TO_DB, _DB_NAME);
+            _dbFullName = Path.Combine(Globals.DbDir, DbName);
             _dbExistsOnFs = File.Exists(Path.Combine(_dbFullName)) ?
                 DbExistsOnFileSystem.True :
                 DbExistsOnFileSystem.False;
@@ -100,17 +99,21 @@ namespace randombg_dotnet{
             _isDbLoaded = true;
         }
 
-        public bool IsIgnoreableLine(string line){
+        private bool IsIgnoreableLine(string line){
             return String.IsNullOrWhiteSpace(line) || line.StartsWith("#");
         }
 
-        public bool IsTableHeader(string line){
+        private bool IsTableHeader(string line){
             return line.StartsWith("[") && line.EndsWith("]");
         }
 
-        public string GetTableName(string line){
+        private string GetTableName(string line){
             // Sample: [images]
             return line.Substring(1, line.Length-2);
+        }
+
+        public void MarkImageDownloaded(ImageRecord img){
+            _images[img.Key] = img.ToggleHasBeenUsed();
         }
 
         public void Save(){
