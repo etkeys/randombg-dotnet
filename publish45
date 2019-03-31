@@ -1,0 +1,3 @@
+#!/bin/bash
+
+dotnet publish --framework "net45" --self-contained false 

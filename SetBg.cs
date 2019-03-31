@@ -71,7 +71,7 @@ namespace randombg_dotnet{
                     FileName = "echo",
                     Arguments = 
                         "Symlinking not supported for this platform. " +
-                        "Skipping."
+                        "Skipping.",
 # endif
                     UseShellExecute = false,
                     RedirectStandardOutput = true,

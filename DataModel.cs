@@ -12,7 +12,7 @@ namespace randombg_dotnet{
     }
 
     public struct ImageRecord: IDbRecord, IEquatable<IDbRecord>{
-        private const string _DELIM = ";";
+        private const char _DELIM = ';';
         public bool HasBeenUsed;
         public string Name, Url;
 
@@ -66,7 +66,7 @@ namespace randombg_dotnet{
 
         public string ToDbString() {
             return string.Join(
-                    _DELIM,
+                    _DELIM.ToString(),
                     HasBeenUsed.ToString(),
                     Name,
                     Url);
