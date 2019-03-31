@@ -1,0 +1,3 @@
+#!/bin/bash
+
+dotnet run --configuration Release --framework net45 -- "$@"
